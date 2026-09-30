@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum GameStatus {
+  voting
+  counting
+  revealed
+}
+
+enum Permission {
+  all
+  facilitator
+}
+
+enum PlayerRole {
+  player
+  spectator
+}
+
+enum IssueStatus {
+  pending
+  voted
+}
+
+model Game {
+  id                 String     @id
+  name               String     @db.VarChar(60)
+  deckType           String
+  deck               String[]
+  creatorSecretHash  String
+  facilitatorId      String?
+  whoCanReveal       Permission @default(all)
+  whoCanManageIssues Permission @default(all)
+  showAverage        Boolean    @default(true)
+  showCountdown      Boolean    @default(true)
+  autoReveal         Boolean    @default(false)
+  status             GameStatus @default(voting)
+  currentIssueId     String?
+  currentRoundId     String?
+  createdAt          DateTime   @default(now())
+  lastActivityAt     DateTime   @default(now())
+  players            Player[]
+  issues             Issue[]
+  rounds             Round[]
+
+  @@index([lastActivityAt])
+}
+
+model Player {
+  id         String     @id
+  gameId     String
+  game       Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  name       String     @db.VarChar(30)
+  role       PlayerRole @default(player)
+  tokenHash  String
+  joinedAt   DateTime   @default(now())
+  lastSeenAt DateTime   @default(now())
+  votes      Vote[]
+
+  @@index([gameId])
+}
+
+model Issue {
+  id            String      @id
+  gameId        String
+  game          Game        @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  title         String      @db.VarChar(200)
+  url           String?     @db.VarChar(500)
+  position      Int
+  finalEstimate String?
+  status        IssueStatus @default(pending)
+
+  @@index([gameId, position])
+}
+
+model Round {
+  id         String    @id
+  gameId     String
+  game       Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  issueId    String?
+  startedAt  DateTime  @default(now())
+  revealedAt DateTime?
+  votes      Vote[]
+}
+
+model Vote {
+  roundId  String
+  round    Round  @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  playerId String
+  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  value    String
+
+  @@id([roundId, playerId])
+}

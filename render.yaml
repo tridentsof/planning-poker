@@ -1,0 +1,28 @@
+# Render blueprint for the socket server (PLAN.md §11). Import this repo in the Render
+# dashboard ("New > Blueprint") to provision the service. The web app deploys separately, on
+# Vercel, with root directory apps/web (see README.md).
+services:
+  - type: web
+    name: planning-poker-socket
+    runtime: node
+    plan: starter # avoids the free tier's cold-start sleep, per PLAN.md §6 risks
+    region: oregon # keep in the same region as your Supabase project
+    buildCommand: >-
+      corepack enable &&
+      pnpm install --frozen-lockfile &&
+      pnpm --filter @planning-poker/shared build &&
+      pnpm --filter @planning-poker/socket build
+    startCommand: pnpm --filter @planning-poker/socket start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: USE_MEMORY_REPO
+        value: "false"
+      - key: DATABASE_URL
+        sync: false # set manually to the Supabase direct connection string
+      - key: CORS_ORIGINS
+        sync: false # e.g. https://<your-app>.vercel.app
+      - key: PORT
+        value: "4000"
+    preDeployCommand: pnpm --filter @planning-poker/socket prisma:migrate
