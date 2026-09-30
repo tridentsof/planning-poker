@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import type { PlayerView, GameStatus } from "@planning-poker/shared";
 import { Seat } from "./Seat";
 import { TableCenter } from "./TableCenter";
-import { CasinoDealer } from "./CasinoDealer";
-import { Users, Sparkles } from "lucide-react";
+import { Users } from "lucide-react";
 
 const MAX_TOP_BOTTOM = 6;
 
@@ -78,33 +76,11 @@ export function PokerTable({
   onReveal: () => void;
   onReset: () => void;
 }) {
-  const [dealerVisible, setDealerVisible] = useState(true);
   const { top, bottom, left, right } = distributeSeats(players);
   const revealed = status === "revealed";
 
   return (
     <div className="flex w-full flex-col items-center gap-4 py-2 sm:py-4">
-      {/* 
-        VIP CASINO CROUPIER DEALER (Top of table)
-      */}
-      <div className="flex flex-col items-center">
-        <CasinoDealer
-          status={status}
-          hasVotes={hasVotes}
-          consensus={consensus}
-          visible={dealerVisible}
-          onToggleVisible={() => setDealerVisible(true)}
-        />
-        {dealerVisible && (
-          <button
-            onClick={() => setDealerVisible(false)}
-            className="mt-1 text-[11px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-          >
-            Hide Dealer
-          </button>
-        )}
-      </div>
-
       {/* 
         AUTHENTIC CASINO POKER TABLE
         Layer 1: Heavy Padded Leather Armrest Rail (Outer Bumper)
