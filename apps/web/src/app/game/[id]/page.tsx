@@ -190,6 +190,7 @@ export default function GameRoomPage({ params }: { params: Promise<{ id: string 
           countdownEndsAt={snapshot.countdownEndsAt}
           hasVotes={votingPlayers.some((p) => p.hasVoted)}
           canAct={canAct}
+          consensus={Boolean(snapshot.results?.consensus)}
           onReveal={() => socket.emit("round:reveal")}
           onReset={() => socket.emit("round:reset")}
         />
