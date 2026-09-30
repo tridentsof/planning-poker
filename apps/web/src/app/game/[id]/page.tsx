@@ -205,7 +205,7 @@ export default function GameRoomPage({ params }: { params: Promise<{ id: string 
         )}
       </main>
 
-      <footer className="sticky bottom-0 z-20 border-t border-slate-200 bg-white/85 p-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/85">
+      <footer className="sticky bottom-0 z-20 flex flex-col items-center justify-center border-t border-slate-200 bg-white/90 p-2.5 sm:p-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">
         {snapshot.status === "revealed" && snapshot.results ? (
           <ResultsPanel results={snapshot.results} showAverage={snapshot.settings.showAverage} />
         ) : self?.role === "player" ? (

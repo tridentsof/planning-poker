@@ -42,41 +42,63 @@ export function Deck({
   }
 
   return (
-    <div
-      ref={groupRef}
-      role="radiogroup"
-      aria-label="Card deck"
-      className="flex gap-2 overflow-x-auto px-1 pb-2 pt-2 scrollbar-thin"
-    >
-      {cards.map((card, i) => {
-        const isSelected = card === selected;
-        return (
-          <motion.button
-            key={card}
-            type="button"
-            role="radio"
-            aria-checked={isSelected}
-            tabIndex={isSelected || (selected === null && i === 0) ? 0 : -1}
-            disabled={disabled}
-            onKeyDown={(e) => handleKeyDown(e, i)}
-            onClick={() => onSelect(isSelected ? null : card)}
-            animate={{ y: isSelected ? -8 : 0 }}
-            whileHover={disabled ? undefined : { y: isSelected ? -8 : -4 }}
-            whileTap={disabled ? undefined : { scale: 0.94 }}
-            transition={{ type: "spring", stiffness: 400, damping: 22 }}
-            className={cn(
-              "flex h-20 w-14 flex-shrink-0 items-center justify-center rounded-lg border-2 text-lg font-semibold",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900",
-              isSelected
-                ? "border-brand-600 bg-brand-600 text-white shadow-lg shadow-brand-600/40"
-                : "border-slate-300 bg-white text-slate-800 shadow-sm hover:border-brand-400 hover:text-brand-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:border-brand-500 dark:hover:text-brand-300",
-              disabled && "cursor-not-allowed opacity-50",
-            )}
-          >
-            {card}
-          </motion.button>
-        );
-      })}
+    <div className="w-full overflow-x-auto py-2.5 px-3 sm:px-6 scrollbar-none flex justify-center">
+      <div
+        ref={groupRef}
+        role="radiogroup"
+        aria-label="Card deck"
+        className="mx-auto flex w-fit max-w-full items-center justify-center gap-2 sm:gap-2.5 px-1 py-1"
+      >
+        {cards.map((card, i) => {
+          const isSelected = card === selected;
+          return (
+            <motion.button
+              key={card}
+              type="button"
+              role="radio"
+              aria-checked={isSelected}
+              tabIndex={isSelected || (selected === null && i === 0) ? 0 : -1}
+              disabled={disabled}
+              onKeyDown={(e) => handleKeyDown(e, i)}
+              onClick={() => onSelect(isSelected ? null : card)}
+              animate={{ y: isSelected ? -12 : 0 }}
+              whileHover={disabled ? undefined : { y: isSelected ? -12 : -5 }}
+              whileTap={disabled ? undefined : { scale: 0.94 }}
+              transition={{ type: "spring", stiffness: 420, damping: 24 }}
+              className={cn(
+                "group relative flex h-20 w-14 sm:h-[92px] sm:w-[62px] flex-shrink-0 flex-col items-center justify-between rounded-xl border-2 p-1.5 transition-colors",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900",
+                isSelected
+                  ? "border-brand-500 bg-gradient-to-b from-brand-500 to-brand-700 text-white shadow-xl shadow-brand-500/35 ring-2 ring-brand-400/50"
+                  : "border-slate-200/90 bg-white text-slate-800 shadow-md hover:border-brand-400 hover:text-brand-700 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:border-brand-500 dark:hover:text-brand-300",
+                disabled && "cursor-not-allowed opacity-50",
+              )}
+            >
+              {/* Top-left mini index */}
+              <span className={cn(
+                "self-start text-[10px] font-bold leading-none select-none",
+                isSelected ? "text-brand-100" : "text-slate-400 dark:text-slate-500 group-hover:text-brand-600 dark:group-hover:text-brand-400",
+              )}>
+                {card}
+              </span>
+
+              {/* Main center number */}
+              <span className="text-xl sm:text-2xl font-bold tracking-tight select-none">
+                {card}
+              </span>
+
+              {/* Bottom-right mini index (rotated) */}
+              <span className={cn(
+                "self-end text-[10px] font-bold leading-none select-none rotate-180",
+                isSelected ? "text-brand-100" : "text-slate-400 dark:text-slate-500 group-hover:text-brand-600 dark:group-hover:text-brand-400",
+              )}>
+                {card}
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
     </div>
   );
 }
+
